@@ -1,0 +1,35 @@
+[user]
+    name    = LibertyReman
+    email   = libertyreman@gmail.com
+
+[color]
+    ui      = auto
+    diff    = auto
+    status  = auto
+    branch  = auto
+
+[color "diff"]
+    meta    = white blue
+    old     = red
+    new     = green
+
+[diff]
+    tool = vimdiff
+
+[difftool]
+    prompt = false
+
+[core]
+    editor      = vim
+    quotepath   = false     # 日本語ファイルの文字化け対策
+    safecrlf    = true      # 改行コードが混在している場合に改行コードの変換を行わない
+    autocrlf    = false     # コミット・チェックアウト時に改行コードの変換を行わない
+
+[fetch]
+    prune = true    # pull(fetch)した時にリモートリポジトリで消されたブランチを反映する
+
+[alias]
+    lg  = log --graph --pretty=format:'%Cred%h%Creset -%C(ul bold yellow)%d%Creset %n%s %Cgreen(%cd) %C(bold blue)<%an>%Creset%n' --abbrev-commit --date=format-local:'%Y/%m/%d %H:%M' --name-status
+    lga = log --graph --all --pretty=format:'%Cred%h%Creset -%C(ul bold yellow)%d%Creset %n%s %Cgreen(%cd) %C(bold blue)<%an>%Creset%n' --abbrev-commit --date=format-local:'%Y/%m/%d %H:%M' --name-status
+
+
