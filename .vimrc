@@ -60,11 +60,16 @@ augroup END
 
 
 "-------------------------
-" Auto save settings
+" Auto file save settings
 "-------------------------
 set autowrite
-autocmd CursorHold *  wall
-autocmd CursorHoldI *  wall
+function AutoWriteIfPossible()
+    if &modified && !&readonly && bufname('%') !=# '' && &buftype ==# '' && expand("%") !=# ''
+        write
+    endif
+endfunction
+autocmd CursorHold * call AutoWriteIfPossible()
+autocmd CursorHoldI * call AutoWriteIfPossible()
 
 
 "-------------------------
