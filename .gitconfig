@@ -22,8 +22,8 @@
 [core]
     editor      = vim
     quotepath   = false     # 日本語ファイルの文字化け対策
-    safecrlf    = true      # 改行コードが混在している場合に改行コードの変換を行わない
-    autocrlf    = false     # コミット・チェックアウト時に改行コードの変換を行わない
+    autocrlf    = false     # 改行コードが混在している場合に改行コードをLFに変換を行わない
+    safecrlf    = true      # 改行コードが混在している場合に"$ git add"できなくする
 
 [fetch]
     prune = true    # pull(fetch)した時にリモートリポジトリで消されたブランチを反映する

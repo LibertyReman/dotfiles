@@ -9,6 +9,9 @@ call vundle#begin()
     Plugin 'itchyny/lightline.vim'
     Plugin 'nathanaelkane/vim-indent-guides'
     Plugin 'airblade/vim-gitgutter'
+    Plugin 'junegunn/fzf'
+    Plugin 'junegunn/fzf.vim'
+    Plugin 'quickhl.vim'
 call vundle#end()
 filetype plugin indent on
 
@@ -57,6 +60,48 @@ augroup vimrc_vim_gitgutter
     autocmd VimEnter,ColorScheme * hi GitGutterChangeDelete    ctermfg=darkgreen ctermbg=236 cterm=bold
 augroup END
 
+nmap gj <Plug>(GitGutterNextHunk)
+nmap gk <Plug>(GitGutterPrevHunk)
+nmap gv <Plug>(GitGutterPreviewHunk)
+
+
+" fzf.vim
+let g:fzf_action = {
+      \ 'enter': 'tab split',
+      \ 'ctrl-t': 'tab split',
+      \ 'ctrl-s': 'split',
+      \ 'ctrl-v': 'vsplit'
+  \ }
+
+let g:fzf_layout = {'down':'50%'}
+let g:fzf_preview_window = ['up:60%', 'ctrl-/']
+
+nnoremap <silent> <C-f> :Files<CR>
+nnoremap <silent> <C-g> :Rg<CR>
+
+
+" quickhl settings
+nmap <Space>m <Plug>(quickhl-manual-this)
+xmap <Space>m <Plug>(quickhl-manual-this)
+nmap <Space>M <Plug>(quickhl-manual-reset)
+xmap <Space>M <Plug>(quickhl-manual-reset)
+
+let g:quickhl_manual_colors = [
+            \ "cterm=bold ctermfg=7  ctermbg=1   gui=bold guibg=#a07040 guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=3   gui=bold guibg=#40a070 guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=4   gui=bold guibg=#70a040 guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=5   gui=bold guibg=#0070e0 guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=6   gui=bold guibg=#007020 guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=21  gui=bold guibg=#d4a00d guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=22  gui=bold guibg=#06287e guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=45  gui=bold guibg=#5b3674 guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=16  gui=bold guibg=#4c8f2f guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=50  gui=bold guibg=#1060a0 guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=56  gui=bold guibg=#a0b0c0 guifg=black",
+            \ "cterm=bold ctermfg=7  ctermbg=2   gui=bold guibg=#4070a0 guifg=#ffffff",
+            \ "cterm=bold ctermfg=16 ctermbg=153 gui=bold guifg=#ffffff guibg=#0a7383",
+            \ ]
+
 
 
 "-------------------------
@@ -68,6 +113,7 @@ function AutoWriteIfPossible()
         write
     endif
 endfunction
+
 autocmd CursorHold * call AutoWriteIfPossible()
 autocmd CursorHoldI * call AutoWriteIfPossible()
 
@@ -106,7 +152,7 @@ hi Repeat       ctermfg=130
 hi Visual       ctermbg=235
 hi Search       ctermfg=cyan ctermbg=12
 hi LineNr       ctermfg=darkgreen
-hi WarningMsg   ctermfg=Yellow
+hi WarningMsg	ctermfg=white ctermbg=196 guifg=White guibg=Red gui=None
 hi MatchParen   term=reverse ctermfg=14 ctermbg=12 guifg=#FFFFFF guibg=Cyan
 
 " vimdiff
@@ -120,6 +166,7 @@ hi DiffText   cterm=bold ctermfg=10 ctermbg=21
 " Basic settings
 "-------------------------
 set encoding=utf-8                  " ターミナルに表示される出力エンコーディング
+set fileencodings=utf-8,cp932,sjis  " 文字コード自動判別
 set fileformat=unix                 " 改行フォーマット
 set fileformats=unix,mac,dos        " 改行フォーマット自動判別
 set clipboard=unnamed,unnamedplus   " OSのクリップボードをレジスタ指定無しでYank, Put出来るように設定
@@ -141,6 +188,8 @@ set linebreak                       " 折り返し表示する時は適切なワ
 set showmatch                       " 閉じ括弧が入力された時に対応する括弧を表示
 set nrformats-=octal                " <C-a> <C-x>の増減で8進数のオプションを削除
 set backspace=indent,eol,start      " <Backspace> の動作設定
+set splitright                      " vert windowした際に右側に表示する
+"set relativenumber                  " カーソル行からの相対的な行番号を表示
 
 set title                           " タイトルを表示
 set number                          " 行番号を表示
@@ -149,7 +198,7 @@ set hlsearch                        " 検索ワードをハイライト
 set incsearch                       " 検索ワードを打ち始めで検索開始
 set ignorecase                      " 検索ワードが小文字の場合は大文字小文字を区別なく検索
 set smartcase                       " 検索ワードに大文字が含まれている場合は区別して検索
-set nowrapscan                      " 検索をファイル末尾まで行ったら再検索しない
+"set nowrapscan                      " 検索をファイル末尾まで行ったら再検索しない
 set expandtab                       " ソフトタブを使用
 "set noexpandtab                    " ハードタブを使用
 set tabstop=4                       " <Tab> キーを押した時の空白の数
@@ -159,6 +208,7 @@ set autoindent                      " 改行した時に前の行のインデン
 set smarttab                        " 行頭の前で<Tab>を打ち込むと、'shiftwidth' の数空白を挿入
 set smartindent                     " 自動インデントを有効
 set cindent                         " C言語に特化した自動インデントを有効
+
 
 " ファイルタイプインデント
 augroup fileTypeIndent
@@ -193,6 +243,8 @@ nnoremap ; :
 nnoremap : ;
 nnoremap * *N
 nnoremap ' *N
+nnoremap " '
+nnoremap =              =<CR>
 nnoremap O              A<return><ESC>k
 nnoremap <return>       i<return><ESC>
 nnoremap <tab>          i<tab><ESC>l
@@ -208,6 +260,8 @@ nnoremap <Esc><Esc> :noh<CR><Esc>
 nnoremap <C-c> maggVGy'a
 " タグ検索
 nnoremap t /tags<Enter>
+" TODOを挿入
+nnoremap X iTODO:<ESC>
 " 区切り線を挿入
 nnoremap C 0i------------<ESC>0
 " 現在時刻の挿入
@@ -217,6 +271,9 @@ nnoremap <silent> Z <ESC>I<C-R>=strftime("**************************************
 
 " jjでノーマルモード
 inoremap jj <Esc>
+
+" 選択範囲でコマンド実行
+vnoremap ; :
 
 " ビジュアルモードで選択した部分を検索
 vnoremap ' "zy:let @/ = @z<CR>nN
@@ -230,7 +287,7 @@ vnoremap ' "zy:let @/ = @z<CR>nN
 set autoread
 augroup vimrc-checktime
     autocmd!
-    autocmd WinEnter * checktime
+    autocmd InsertEnter,WinEnter * checktime
 augroup END
 
 " 前回閉じた行番号でファイルを開く
@@ -267,5 +324,16 @@ augroup END
 if &diff
     set noreadonly
 endif
+
+
+" ターミナルモードでスクロール
+tnoremap <c-g> <c-\><c-n>
+
+
+" gdb 設定
+" packadd termdebug
+" set ttymouse=xterm2
+" let g:termdebug_wide = 163
+
 
 

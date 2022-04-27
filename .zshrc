@@ -37,6 +37,7 @@ alias cl='clear'
 alias ls='ls -G -F'
 alias ..='cd ..'
 alias vim='vim -p'
+alias fvim='vim `fzf`'
 alias Note='vim -p ~/Documents/Memo.txt'
 alias cgrep='grep --color=always -n'
 alias mkdir='mkdir -p'
@@ -47,13 +48,22 @@ alias ga.='git add .'
 alias gd='git diff --ws-error-highlight=new,old'
 alias gda='git diff --ws-error-highlight=new,old --cached'
 alias gl='git lg'
-alias gls='git lg -n8'
+alias gls='git lg -n4'
 alias gla='git lga'
-alias glas='git lga -n12'
+alias glas='git lga -n8'
 alias glp='git log -p'
 
 function cd(){
     builtin cd "$@" && l
+}
+function cdl(){
+    if [ $# -eq 0 ]; then
+        cd `ls -1tr | tail -n1`
+    elif [ $# -eq 1 ]; then
+        cd `ls -1tr | tail -n ${1} | head -n1`
+    else
+        echo "Argument Error"
+    fi
 }
 function gc(){
     git commit -m "$*"
@@ -63,6 +73,18 @@ function gdc(){
 }
 function gdcs(){
     git show --name-status "$1"
+}
+function ptest(){
+    if [ $# -ne 1 ]; then
+        echo "Argument Error"
+    else
+        cd ~/programming/test/
+        date=`date +%Y%m%d`
+        mkdir ${date}_$@
+		cp ./test.cpp ${date}_$@
+        cd ${date}_$@
+        echo "Created ${date}_$@ Dir and moved"
+    fi
 }
 function CalcDate(){
     if [[ $# -eq 1 ]]; then
@@ -76,6 +98,7 @@ function CalcDate(){
         echo "  USAGE: $ Calc_date older_date newer_date "
     fi
 }
+
 # Powerline settings
 function powerline_precmd() { PS1="
 
@@ -91,5 +114,9 @@ function install_powerline_precmd() {
     precmd_functions+=(powerline_precmd)
 }
 install_powerline_precmd
+
+# fzf initialization
+export FZF_DEFAULT_OPTS='--color hl:#ffff00,hl+:#ffff00'
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 
