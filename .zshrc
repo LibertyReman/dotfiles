@@ -33,34 +33,62 @@ bindkey \^U backward-kill-line          # ctrl-uで行頭まで削除を有効�
 alias l='ls -1tr --color=auto -F'
 alias e='exit'
 alias o='open .'
+alias t='if [ `echo $?` -eq 0 ]; then printf "\n\033[30;43m%s\033[m\n\n" "###   TEST OK   ###"; else printf "\n\033[5;41m%s\033[m\n\n" "###   TEST NG   ###"; fi'
 alias cl='clear'
 alias ls='ls -G -F'
+alias mv='mv -n'
 alias ..='cd ..'
+alias ql='qlmanage -p “$@” >& /dev/null'
+alias desk='cd ~/Desktop/'
+alias sleepoff='sudo pmset -a disablesleep 1'
+alias sleepon='sudo pmset -a disablesleep 0'
 alias vim='vim -p'
 alias fvim='vim `fzf`'
-alias Note='vim -p ~/Documents/Memo.txt'
+alias note='vim -p ~/Dropbox/Memo.txt ~/Dropbox/DoneList.txt'
+alias eng='vim -p ~/Desktop/ENG/english.txt'
 alias cgrep='grep --color=always -n'
 alias mkdir='mkdir -p'
-alias DateMkdir='date +%Y%m%d | xargs mkdir'
 alias gs='git status'
 alias ga='git add'
 alias ga.='git add .'
-alias gd='git diff --ws-error-highlight=new,old'
-alias gda='git diff --ws-error-highlight=new,old --cached'
+alias gco='git checkout'
+alias gd='git difftool --tool=vimdiff --no-prompt'
+alias gda='git difftool --tool=vimdiff --no-prompt --cached'
 alias gl='git lg'
 alias gls='git lg -n4'
 alias gla='git lga'
 alias glas='git lga -n8'
 alias glp='git log -p'
+alias zshrc='vim ~/.zshrc && source ~/.zshrc'
+alias vimrc='vim ~/.vimrc'
+alias ctags="`brew --prefix`/bin/ctags"
 
 function cd(){
     builtin cd "$@" && l
 }
 function cdl(){
     if [ $# -eq 0 ]; then
-        cd `ls -1tr | tail -n1`
+        cd "`ls -1tr | tail -n1 | sed "s|\@$||g\"`"
     elif [ $# -eq 1 ]; then
-        cd `ls -1tr | tail -n ${1} | head -n1`
+        cd "`ls -1tr | tail -n ${1} | head -n1 | sed "s|\@$||g\"`"
+    else
+        echo "Argument Error"
+    fi
+}
+function catl(){
+    if [ $# -eq 0 ]; then
+        cat `ls -1tr | tail -n1 | head -n1`
+    elif [ $# -eq 1 ]; then
+        cat `ls -1tr | tail -n${1} | head -n1`
+    else
+        echo "Argument Error"
+    fi
+}
+function viml(){
+    if [ $# -eq 0 ]; then
+        vim `ls -1tr | tail -n1 | head -n1`
+    elif [ $# -eq 1 ]; then
+        vim `ls -1tr | tail -n${1} | head -n1`
     else
         echo "Argument Error"
     fi
@@ -69,7 +97,7 @@ function gc(){
     git commit -m "$*"
 }
 function gdc(){
-    git show "$@"
+    git difftool "$1"^ "$1" --tool=vimdiff --no-prompt ${*:2}
 }
 function gdcs(){
     git show --name-status "$1"
@@ -81,9 +109,18 @@ function ptest(){
         cd ~/programming/test/
         date=`date +%Y%m%d`
         mkdir ${date}_$@
-		cp ./test.cpp ${date}_$@
+        cp ./.test.cpp ${date}_$@/test.cpp
+        cp ./.index.html ${date}_$@/index.html
+        cp ./.style.css ${date}_$@/style.css
         cd ${date}_$@
-        echo "Created ${date}_$@ Dir and moved"
+    fi
+}
+function dateMkdir(){
+    if [ $# -ne 1 ]; then
+        echo "Argument Error"
+    else
+        date=`date +%Y%m%d`
+        mkdir ${date}_$@
     fi
 }
 function CalcDate(){
@@ -101,7 +138,7 @@ function CalcDate(){
 
 # Powerline settings
 function powerline_precmd() { PS1="
-
+`sts="$?"; if [ $sts -ne 0 ]; then echo -e "\033[5;41m###   CMD ERR $sts   ###\033[m"; echo " "; fi`
 $(~/powerline-shell.py --shell zsh $? 2> /dev/null)
 %F{12}`LC_ALL=C date | awk '{printf "%s %s.%s %s",$1,$2,$3,$4}' | sed "s/...$//g"`%f%F{2} $ %f"
 }
@@ -119,4 +156,9 @@ install_powerline_precmd
 export FZF_DEFAULT_OPTS='--color hl:#ffff00,hl+:#ffff00'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# nodebrew
+export PATH=$HOME/.nodebrew/current/bin:$PATH
+
+# rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
 

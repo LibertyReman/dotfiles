@@ -87,7 +87,7 @@ nmap <Space>M <Plug>(quickhl-manual-reset)
 xmap <Space>M <Plug>(quickhl-manual-reset)
 
 let g:quickhl_manual_colors = [
-            \ "cterm=bold ctermfg=7  ctermbg=1   gui=bold guibg=#a07040 guifg=#ffffff",
+            \ "cterm=bold ctermfg=7  ctermbg=196 gui=bold guibg=#a07040 guifg=#ffffff",
             \ "cterm=bold ctermfg=7  ctermbg=3   gui=bold guibg=#40a070 guifg=#ffffff",
             \ "cterm=bold ctermfg=7  ctermbg=4   gui=bold guibg=#70a040 guifg=#ffffff",
             \ "cterm=bold ctermfg=7  ctermbg=5   gui=bold guibg=#0070e0 guifg=#ffffff",
@@ -121,6 +121,7 @@ autocmd CursorHoldI * call AutoWriteIfPossible()
 "-------------------------
 " Complement settings
 "-------------------------
+set complete=.,w,b,u,i          "タグファイルを補完候補から削除
 set completeopt=menuone
 for k in split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_",'\zs')
     exec "imap " . k . " " . k . "<C-N><C-P>"
@@ -152,7 +153,7 @@ hi Repeat       ctermfg=130
 hi Visual       ctermbg=235
 hi Search       ctermfg=cyan ctermbg=12
 hi LineNr       ctermfg=darkgreen
-hi WarningMsg	ctermfg=white ctermbg=196 guifg=White guibg=Red gui=None
+hi WarningMsg   ctermfg=white ctermbg=196 guifg=White guibg=Red gui=None
 hi MatchParen   term=reverse ctermfg=14 ctermbg=12 guifg=#FFFFFF guibg=Cyan
 
 " vimdiff
@@ -161,12 +162,20 @@ hi DiffDelete cterm=bold ctermfg=10 ctermbg=52
 hi DiffChange cterm=bold ctermfg=10 ctermbg=17
 hi DiffText   cterm=bold ctermfg=10 ctermbg=21
 
+" vim transparent
+autocmd VimEnter,Colorscheme * hi Normal ctermbg=NONE guibg=NONE
+autocmd VimEnter,Colorscheme * hi NonText ctermbg=NONE guibg=NONE
+autocmd VimEnter,Colorscheme * hi SpecialKey ctermbg=NONE guibg=NONE
+autocmd VimEnter,Colorscheme * hi EndOfBuffer ctermbg=NONE guibg=NONE
+autocmd VimEnter,Colorscheme * hi LineNr ctermbg=NONE guibg=NONE
+autocmd VimEnter,Colorscheme * hi Folded ctermbg=NONE guibg=NONE
+
 
 "-------------------------
 " Basic settings
 "-------------------------
 set encoding=utf-8                  " ターミナルに表示される出力エンコーディング
-set fileencodings=utf-8,cp932,sjis  " 文字コード自動判別
+set fileencodings=utf-8,cp932,sjis  " 文字コード自動判別（utf-8から判別）
 set fileformat=unix                 " 改行フォーマット
 set fileformats=unix,mac,dos        " 改行フォーマット自動判別
 set clipboard=unnamed,unnamedplus   " OSのクリップボードをレジスタ指定無しでYank, Put出来るように設定
@@ -181,7 +190,7 @@ set laststatus=2                    " ステータスラインを常に表示
 set wildmenu                        " ステータスラインに候補を表示
 set wildmode=list:longest           " wildmenuの動作設定
 set virtualedit=block               " 矩形ビジュアルモードでフリーカーソルを有効
-set whichwrap=b,s,[,],<,>           " 特定キーで行頭行末の回り込みカーソル移動を許可
+set whichwrap=h,l,b,s,[,],<,>       " 特定キーで行頭行末の回り込みカーソル移動を許可
 set scrolloff=16                    " 画面端でのスクロールに余裕を追加
 set wrap                            " ウィンドウの幅より長い行は折り返して表示
 set linebreak                       " 折り返し表示する時は適切なワード区切りで表示
@@ -193,14 +202,15 @@ set splitright                      " vert windowした際に右側に表示す�
 
 set title                           " タイトルを表示
 set number                          " 行番号を表示
-set mouse=n                         " ノーマルモード時はマウスを有効にする
+"set mouse=n                         " ノーマルモード時はマウスを有効にする
+set mouse-=a                        " ノーマルモード時はマウスを有効にする
 set hlsearch                        " 検索ワードをハイライト
 set incsearch                       " 検索ワードを打ち始めで検索開始
 set ignorecase                      " 検索ワードが小文字の場合は大文字小文字を区別なく検索
 set smartcase                       " 検索ワードに大文字が含まれている場合は区別して検索
 "set nowrapscan                      " 検索をファイル末尾まで行ったら再検索しない
 set expandtab                       " ソフトタブを使用
-"set noexpandtab                    " ハードタブを使用
+"set noexpandtab                     " ハードタブを使用
 set tabstop=4                       " <Tab> キーを押した時の空白の数
 set shiftwidth=4                    " 自動インデントで使われる空白の数
 set softtabstop=4                   " <Tab> の幅として認識する空白の数
@@ -213,11 +223,10 @@ set cindent                         " C言語に特化した自動インデン�
 " ファイルタイプインデント
 augroup fileTypeIndent
     autocmd!
-    autocmd BufNewFile,BufRead *.yaml   setlocal tabstop=2 softtabstop=2 shiftwidth=2
-    autocmd BufNewFile,BufRead *.yml    setlocal tabstop=2 softtabstop=2 shiftwidth=2
-    autocmd BufNewFile,BufRead *.html   setlocal tabstop=2 softtabstop=2 shiftwidth=2
-    autocmd BufNewFile,BufRead *.rb     setlocal tabstop=2 softtabstop=2 shiftwidth=2
-    autocmd BufNewFile,BufRead *.erb    setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.yaml,*.yml             setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.html,*.php             setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.mjs,*.js,*.css,*.scss  setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.rb,*.erb               setlocal tabstop=2 softtabstop=2 shiftwidth=2
 augroup END
 
 
@@ -244,6 +253,9 @@ nnoremap : ;
 nnoremap * *N
 nnoremap ' *N
 nnoremap " '
+nnoremap n nzz
+nnoremap <C-j>          <C-i>
+nnoremap <C-k>          <C-o>
 nnoremap =              =<CR>
 nnoremap O              A<return><ESC>k
 nnoremap <return>       i<return><ESC>
@@ -259,7 +271,7 @@ nnoremap <Esc><Esc> :noh<CR><Esc>
 " 全ての行をコピー
 nnoremap <C-c> maggVGy'a
 " タグ検索
-nnoremap t /tags<Enter>
+nnoremap t /・tags<Enter>zz
 " TODOを挿入
 nnoremap X iTODO:<ESC>
 " 区切り線を挿入
@@ -268,6 +280,13 @@ nnoremap C 0i------------<ESC>0
 nnoremap T <ESC>I<C-R>=strftime("[%Y/%m/%d (%a) %H:%M]")<CR><CR><ESC>
 " ノートの挿入
 nnoremap <silent> Z <ESC>I<C-R>=strftime("************************************************************\n・  [%Y/%m/%d (%a) %H:%M]")<CR><CR><ESC>ka
+
+" tagコマンドは新規タブで開く
+nnoremap <silent><C-]> <C-w><C-]><C-w>T
+nnoremap <C-t> <NOP>
+
+" htmlの雛形を出力
+nnoremap I i<CR><!DOCTYPE html><CR><html lang="en"><CR><head><CR><meta charset="UTF-8"><CR><meta name="viewport" content="width=device-width, initial-scale=1.0"><CR><title>Document</title><CR></head><CR><body><CR><CR></body><CR></html><ESC>10k0
 
 " jjでノーマルモード
 inoremap jj <Esc>
@@ -326,14 +345,29 @@ if &diff
 endif
 
 
-" ターミナルモードでスクロール
+" ターミナルモード スクロール設定
 tnoremap <c-g> <c-\><c-n>
+tnoremap Hh <c-x>gT
+" ターミナルモード タブ移動設定
+tnoremap Ll <c-x>gt
+" ターミナルモード コマンド履歴
+tnoremap <C-p> <Up>
+tnoremap <C-n> <Down>
 
+" ターミナルモード 起動エイリアス
+command B :bo term
+command V :vert term
+command T :tab term
 
 " gdb 設定
-" packadd termdebug
-" set ttymouse=xterm2
-" let g:termdebug_wide = 163
+"packadd termdebug
+"set ttymouse=xterm2
+"let g:termdebug_wide = 163
 
+" カーソルの形状を変更する
+let &t_SI .= "\e[5 q"  " 挿入モード時
+let &t_EI .= "\e[1 q"  " ノーマルモード時
 
+" HTMLタグのマッチを可能にする
+source $VIMRUNTIME/macros/matchit.vim
 

@@ -21,7 +21,7 @@
 
 [core]
     editor      = vim
-    quotepath   = false     # 日本語ファイルの文字化け対策
+    quotepath   = false     # 日本語ファイル名の文字化け対策
     autocrlf    = false     # 改行コードが混在している場合に改行コードをLFに変換を行わない
     safecrlf    = true      # 改行コードが混在している場合に"$ git add"できなくする
 
@@ -33,3 +33,7 @@
     lga = log --graph --all --pretty=format:'%Cred%h%Creset -%C(ul bold yellow)%d%Creset %n%s %Cgreen(%cd) %C(bold blue)<%an>%Creset%n' --abbrev-commit --date=format-local:'%Y/%m/%d %H:%M' --name-status
 
 
+[http]
+    postBuffer = 10485760   # PUSHできる最大データサイズを10MBに変更
+[init]
+	defaultBranch = main    # デフォルトのブランチ名をmainに設定
